@@ -109,8 +109,6 @@ def generate_feature(data, word2vec):
             print(e)
         feature = np.concatenate((prefix_vec, title_vec, tag_vec))
         features.append(feature)
-        if idx == 1000:
-            break
     return pd.DataFrame(features)
 
 
