@@ -114,6 +114,7 @@ class MLP_Wrapper(nn.Module):
                 if step >0 and step % val_every ==0:
                     loss, acc = self.evaluate()
                     print('validate at step {}, loss:{}, acc:{}'.format(step, loss, acc))
+                    self.train()
 
     def evaluate(self):
         self.eval()
