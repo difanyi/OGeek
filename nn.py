@@ -36,7 +36,8 @@ class MLP_Wrapper(nn.Module):
 
 
     def forward(self, x):
-
+        
+        x = x.float()
         x = self.in_fc(x)
 
         x = self.in_bn(x)
@@ -98,6 +99,7 @@ class MLP_Wrapper(nn.Module):
                 if self.lr_decay and step >0 and step% self.lr_decay_every ==0:
                     self.decay_lr()
 
+                data = data.float()
                 logits= self.forward(data)
                 loss = self.loss(logits, target)
 
