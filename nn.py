@@ -18,7 +18,7 @@ class MLP_Wrapper(nn.Module):
         self.drop_keep_prob = drop_keep_prob
 
         self.bulid_model()
-
+        print('buld_model_success.')
 
     def bulid_model(self):
 
@@ -36,20 +36,16 @@ class MLP_Wrapper(nn.Module):
 
 
     def forward(self, x):
-        
-        x = x.float()
         x = self.in_fc(x)
-
         x = self.in_bn(x)
         x = F.relu(x)
-
         for i in range(self.num_layers-1):
             x = self.__getattr__('hidden_layer_{}'.format(i))(x)
             x = self.__getattr__('bn_{}'.format(i))(x)
 
             x = F.relu(x)
 
-        x = F.dropout(self.drop_keep_prob)
+        x = F.dropout(x, self.drop_keep_prob, self.training)
 
         out = self.out_fc(x)
 
@@ -92,10 +88,11 @@ class MLP_Wrapper(nn.Module):
 
         self.train()
         num_train_batches = len(train_loader)
+        print('training start.')
         for epoch in range(self.num_epochs):
             for i ,(data, target) in enumerate(train_loader):
                 step = num_train_batches * epoch + i
-
+                print('step{}'.format(step))
                 if self.lr_decay and step >0 and step% self.lr_decay_every ==0:
                     self.decay_lr()
 
@@ -103,9 +100,9 @@ class MLP_Wrapper(nn.Module):
                 logits= self.forward(data)
                 loss = self.loss(logits, target)
 
-
                 self.opt.zero_grad()
                 loss.backward()
+               
                 self.opt.step()
 
                 acc = (torch.argmax(logits, -1) == target).sum().float() / data.shape[0]

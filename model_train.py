@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.metrics import f1_score
 from dataset import *
 from nn import *
-
+from dataset import make_ogeek_provider
 # def train_and_predict(X_train, y_train, X_val, y_val, X_test, **kwargs):
 #     """
 #         模型训练和预测
@@ -69,9 +69,10 @@ def my_f1_score(preds, dtrain):
 
 def MLP_Training(path):
     dataset = make_ogeek_provider(path,10000)
+    print('make_dataset_success.')
     data = np.load('./output/data_process.npz')
     model = MLP_Wrapper(10,100,622,2)
-    model = model.float()
+    #model = model.float()
     # if torch.cuda.is_available():
     #     model = model.cuda()
     
@@ -88,9 +89,9 @@ def MLP_Training(path):
     #评估
 
     #预测
-    y_pre = predict(data['X_val'])
+    y_pre = model.predict(data['X_val'])
     print('验证集F1：%f' % f1_score(y_val, y_pre))
-    y_test = predict(data['X_test'])
+    y_test = model.predict(data['X_test'])
     # 保存预测结果 待提交
     print('Saving ...\n')
     np.savetxt('./output/submit_MLE.csv', y_test, delimiter=',')

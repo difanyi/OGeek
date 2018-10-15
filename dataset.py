@@ -35,7 +35,7 @@ class OGeekDataSet(data.Dataset):
 
             return query, target_
 
-        else: return query
+        else: return query, None
 
     def __len__(self): 
         return len(self.x)
@@ -53,7 +53,7 @@ def make_ogeek_provider(path, batch_size):
     OGeek_test = OGeekDataSet(path, 'test', to_tensor, to_tensor)
 
     test_loader = data.DataLoader(OGeek_test, batch_size, shuffle=False)
-
+ 
     return {
         'train': train_loader,
         'val': val_loader,
