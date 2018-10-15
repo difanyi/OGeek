@@ -1,4 +1,5 @@
 # encoding: utf-8
+import torch
 import numpy as np
 # from xgboost import XGBClassifier
 from sklearn.metrics import f1_score
@@ -77,24 +78,25 @@ def MLP_Training(path):
     #     model = model.cuda()
     
     #定义损失函数和优化器
-    model.compile_optimizer('adam', 1e-3, 200, l2_reg = 0,
-                          lr_decay=False, lr_decay_rate=0.9, lr_decay_min = None,
+    model.compile_optimizer('adam', 1e-3, 100, l2_reg = 1e-5,
+                          lr_decay=True, lr_decay_rate=0.9, lr_decay_min = 0,
                           lr_decay_every = 1000,
                           )
     
     #训练
     print(type(dataset['train']))
-    model.fit(dataset['train'], dataset['val'], print_every=100,val_every= 1000)
+    model.fit(dataset['train'], dataset['val'], print_every=100,val_every= 100)
 
     #评估
 
     #预测
     y_pre = model.predict(data['X_val'])
     print('验证集F1：%f' % f1_score(y_val, y_pre))
-    y_test = model.predict(data['X_test'])
+         
+    y_test = model.predict(torch.from_numpy(data['X_test']))
     # 保存预测结果 待提交
     print('Saving ...\n')
-    np.savetxt('./output/submit_MLE.csv', y_test, delimiter=',')
+    np.savetxt('./output/submit_MLE.csv', y_test.numpy(), delimiter=',')
 
     
 if __name__ == '__main__':

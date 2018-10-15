@@ -127,7 +127,7 @@ class MLP_Wrapper(nn.Module):
             acc_.append(acc)
 
 
-        return torch.mean(losses), torch.mean(acc_)
+        return torch.mean(torch.stack(losses)), torch.mean(torch.stack(acc_))
 
     def predict(self,x):
         logits = self.forward(x)
